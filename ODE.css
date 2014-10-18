@@ -1,0 +1,70 @@
+.Od3{font-family:"Lucida Grande","Lucida Sans Unicode","sans-serif";font-size:100%;line-height:115%}
+.Od3 h1, .Od3 h2, .Od3 h3, .Od3 h4, .Od3 ul, .Od3 li, .Od3 dl, .Od3 dt, .Od3 dd, .Od3 p{margin:0;padding:0;border:none;font-size:100%}
+.Od3 ul{list-style-type:none}
+.Od3 li{list-style:none}
+.Od3 em{font-style:italic;font-family:'Georgia','Times',"Times New Roman",'serif'}
+.Od3 a:hover, .sdh:hover{text-decoration:underline}
+.k0i+.k0i{border-top:2px dashed gray;margin-top:1em;padding-top:0.5em}
+.h1s, .b6i dt{margin-bottom:1em}
+h2.z2h, h2.hxy, .b6i h4{display:inline-block;font-size:120%;color:blue;font-weight:bold}
+.f0t dt, .f0t dt .ysl, .f0t dt+.pxt{display:inline-block}
+.f0t dt, .f0t dt+.pxt{margin:0 0.3em 0 0}
+.f0t dt{padding-top:0.2em}
+.f0t .b6i h4{font-size:110%;color:royalblue}
+.f0t .b6i h4:before{content:"-";color:black;padding-right:2px}
+.f0t .b6i h4:after{content:",";color:black;font-size:90%}
+h2.z2h span, h2.hxy span{font-weight:normal;font-size:95%}
+h2.hxy{color:red}
+.pxt{padding-left:0.3em;font-family:"Lucida Sans Unicode","Arial Unicode MS";color:dimgray;white-space:nowrap}
+.a8e{cursor:pointer;width:16px;height:16px;vertical-align:middle}
+h2.z2h .lx6, h2.hxy .lx6{font-size:70%;font-weight:normal;position:relative;vertical-align:super;color:black;padding-left:2px}
+.k0z+.k0z{border-top:1px royalblue dashed;margin-top:0.4em;padding-top:0.2em}
+h3.nvt{display:inline-block;font-weight:normal}
+.xno{display:inline-block;font-weight:bold;color:sienna;font-family:"Trebuchet MS"}
+a.xno, .cw6, .mbw a{text-decoration:none}
+.xno+.pzg{padding-left:0.3em}
+.pzg{color:#333;font-size:90%;font-family:"Lucida Sans Unicode","Arial Unicode MS"}
+.rlx{font-style:normal;font-weight:normal;font-size:100%}
+.iko{color:#369;font-size:110%;font-weight:bold;font-family:"Lucida Grande","Lucida Sans Unicode","sans-serif"}
+em.tb0{font-style:normal;font-weight:normal;color:#090;font-size:95%;font-family:Helvetica;letter-spacing:0.5px}
+.u2n, .o2x, .Od3 .se2 .u2n, dd.lg4{padding:0.2em 0 0 1em}
+.ewq{padding:0.1em 0 0 2em}
+.ulk{}.ysl{}.aw5{}
+em.xv4, .lmn{font-style:normal;color:#369;font-size:95%;font-family:Helvetica;letter-spacing:0.5px}
+em.xv4 b{font-size:105%}
+.ld9{}
+.sdh{color:gray;text-transform:uppercase;font-size:80%;font-family:Helvetica;cursor:pointer}
+.x3z{cursor:pointer}
+.x3z:after{content:"...";display:inline-block;margin-left:0.5em;padding:1px;font-size:80%;line-height:70%;font-family:Helvetica;color:#888;outline:1px solid #CCC;white-space:nowrap}
+.x3z:hover:after{background-color:#EEF}
+.xxn, .lmn{display:block}
+.pzw{font-family:Helvetica;letter-spacing:0.5px;border-left:3px solid #DDD;padding-left:0.3em}
+.dhk, .pzw{display:none}
+.rnr, em.u0f{font-style:italic;color:teal;font-size:85%;font-family:Helvetica;letter-spacing:0.5px}
+.pzg .rnr, .pzg em.u0f{font-size:90%}
+.vkq{display:inline-block;color:blue;font-weight:bold;font-family:Helvetica;position:absolute;left:2px;width:1.5em;text-align:center}
+.ewq .vkq{left:1.3em;font-size:80%;color:#f78e1e;width:1.6em;font-family:"Arial Narrow","Arial";text-align:right}
+.cw6, .mbw a{color:royalblue;font-weight:bold}
+.qbl{color:#369;font-size:110%}
+.eov, .oqe{margin:0.3em 0;background-color:#eeece1}
+.uxu{margin:0.3em 0;background-color:Lavender}
+.eov h3, .uxu h3, .oqe:before{display:inline;font-weight:bold;font-size:100%;text-transform:uppercase;font-family:Helvetica}
+.eov h3:after, .uxu h3:after{content:": "}
+.eov p, .uxu p{display:inline}
+.eov h3, .oqe:before{color:#333;letter-spacing:0.5px}
+.uxu h3{color:#090}
+.uxu em{color:#33E}
+.uxu em b{font-size:105%}
+.oqe:before{content:"Origin: "}
+.q5j{}
+.pdj{color:maroon;font-family:Helvetica;letter-spacing:0.5px}
+.s0c, .f0t{margin-top:0.5em}
+.s0c h3, .f0t h3{display:inline-block;padding:0 4px 0 3px;font-weight:bold;font-size:105%;color:white;background-color:#36E;border-top-right-radius:8px;font-family:Helvetica}
+.eh8{}.eju{}.s6x{}
+.sgx{font-variant:small-caps;font-weight:bold;font-size:105%}
+.dwy{padding-top:0.5em;position:relative;top:-1px;border-top:1px dashed #36E}
+.dwy p:before, .n3h:before, .mbw:before{content:"\021E8\020"}
+.rqo{color:black;font-size:90%;font-weight:normal}
+h2.z2h .l6p, h2.hxy .l6p, h4 .l6p{color:blue;font-size:110%;font-weight:bold}
+.dwy .pz3{margin-top:0.3em}
+.n3h, .mbw{display:block;padding-top:0.8em}
