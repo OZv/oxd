@@ -710,7 +710,7 @@ class ode_downloader(downloader):
         if line.startswith('@@@'):
             return line
         elif re.compile(r'\="atv\(').search(line):
-            src = '<script type="text/javascript"src="o3.js"></script><script>if(typeof(o0e)=="undefined"){var l=document.getElementsByTagName("link");var r=/ODE.css$/;for(var i=l.length-1;i>=0;i--)with(l[i].href){var m=match(r);if(m&&l[i].id=="g3o"){document.write(\'<script src="\'+replace(r,"o3.js")+\'"type="text/javascript"><\/script>\');break;}}}</script>'
+            src = '<script type="text/javascript"src="o3.js"></script><script>if(typeof(o0e)=="undefined"){var _l=document.getElementsByTagName("link");var _r=/ODE.css$/;for(var i=_l.length-1;i>=0;i--)with(_l[i].href){var _m=match(_r);if(_m&&_l[i].id=="g3o"){document.write(\'<script src="\'+replace(_r,"o3.js")+\'"type="text/javascript"><\/script>\');break;}}}</script>'
             line = re.compile(r'(^<link )').sub(r'\1id="g3o"', line, 1)
         elif re.compile(r'\="xh5\(').search(line):
             src = '<script>document.write(\'<script>function xh5(c,d){var n=c.parentNode.nextSibling;if(d)n=n.childNodes[0];with(n.style)if(display!="block")display="block";else display="none";}<\/script>\');</script>'
