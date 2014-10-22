@@ -1,5 +1,5 @@
 .Od3{font-family:"Lucida Grande","Lucida Sans Unicode","sans-serif";font-size:100%;line-height:115%}
-.Od3 h1, .Od3 h2, .Od3 h3, .Od3 h4, .Od3 ul, .Od3 li, .Od3 dl, .Od3 dt, .Od3 dd, .Od3 p{margin:0;padding:0;border:none;font-size:100%}
+.Od3 h1, .Od3 h2, .Od3 h3, .Od3 h4, .Od3 ul, .Od3 li, .Od3 dl, .Od3 dt, .Od3 dd, .Od3 p{font-style:normal;margin:0;padding:0;border:none;font-size:100%}
 .Od3 ul{list-style-type:none}
 .Od3 li{list-style:none}
 .Od3 em{font-style:italic;font-family:'Georgia','Times',"Times New Roman",'serif'}
