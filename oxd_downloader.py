@@ -664,6 +664,8 @@ class ode_downloader(downloader):
         line = p.sub(r'<p><span onclick="xh5(this,0)"\1span></p>', line)
         p = re.compile(r'(?<=<div class=")eov(?=">(?:<div class="ysl">)?<h3>\s*Usage\s*</h3>)', re.I)
         line = p.sub(r'uxu', line)
+        p = re.compile(r'(?<=<div class=")eov(?=">(?:<div class="ysl">)?<h3>\s*Origin\s*</h3>)', re.I)
+        line = p.sub(r'e8l', line)
         p = re.compile(r'(?<=<div class=")u2n(">.+?<span class="aw5">)', re.I)
         line = p.sub(self.__repun, line)
         line = ''.join(['<link rel="stylesheet"href="', self.DIC_T, '.css"type="text/css"><div class="Od3">', line, '</div>'])
