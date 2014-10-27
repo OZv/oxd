@@ -20,7 +20,6 @@ h2.hxy{color:red}
 h2.z2h .lx6, h2.hxy .lx6{font-size:70%;font-weight:normal;position:relative;vertical-align:super;color:black;padding-left:2px}
 .k0z+.k0z{border-top:1px royalblue dashed;margin-top:0.4em;padding-top:0.2em}
 h3.nvt{display:inline-block;font-weight:normal}
-h3.nvt+i.rnr:before{content:" "}
 .xno{display:inline-block;font-weight:bold;color:sienna;font-family:"Trebuchet MS"}
 a.xno, .cw6, .mbw a{text-decoration:none}
 .xno+.pzg{padding-left:0.3em}
@@ -51,12 +50,14 @@ em.xv4 b{font-size:105%}
 .e8l, .oqe{margin:0.3em 0;background-color:#eeece1}
 .uxu{margin:0.3em 0;background-color:#E5EFE5}
 .e8l h3, .uxu h3, .oqe:before{display:inline;font-weight:bold;font-size:100%;text-transform:uppercase;font-family:Helvetica}
-.e8l h3:after, .uxu h3:after{content:": "}
+.e8l h3:after, .uxu h3:after{content:":"}
 .e8l p, .uxu p{display:inline}
 .e8l h3, .oqe:before{color:#333;letter-spacing:0.5px}
 .uxu h3{color:#090}
 .uxu em{color:#088}
 .uxu em b{font-size:105%}
+.b9e{color:#930;font-family:Helvetica}
+.b9e:after{content:"."}
 .oqe:before{content:"Origin: "}
 .q5j{}
 .pdj{color:maroon;font-family:Helvetica;letter-spacing:0.5px}
@@ -67,6 +68,6 @@ em.xv4 b{font-size:105%}
 .dwy{padding-top:0.5em;position:relative;top:-1px;border-top:1px dashed #36E}
 .dwy p:before, .n3h:before, .mbw:before{content:"\021E8\020"}
 .rqo{color:black;font-size:90%;font-weight:normal}
-h2.z2h .l6p, h2.hxy .l6p, h4 .l6p{color:blue;font-size:110%;font-weight:bold}
+h2.z2h .l6p, h2.hxy .l6p, h4 .l6p, .rqo .l6p{color:blue;font-size:110%;font-weight:bold}
 .dwy .pz3{margin-top:0.3em}
 .n3h, .mbw{display:block;padding-top:0.8em}
