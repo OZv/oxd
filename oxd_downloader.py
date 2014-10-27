@@ -581,6 +581,13 @@ class ode_downloader(downloader):
         else:
             return m.group(0)
 
+    def __repnum(self, m):
+        text = m.group(1)
+        p = re.compile(r'\s*(<b)(?=>\d</b>)')
+        if text.find('<b>1</b>')>-1 and len(p.findall(text))>1:
+            text = p.sub(r' \1 class="b9e"', text)
+        return text
+
     def __fixexample(self, m):
         ul = m.group(2)
         p = re.compile(r'\s*<li[^>]*>\s*(.+?)\s*</li>\s*')
@@ -654,6 +661,8 @@ class ode_downloader(downloader):
         line = p.sub(self.__prerepanc, line)
         p = re.compile(r'(?<=<h3 class="nvt">)(.+?)(?=</h3>)', re.I)
         line = p.sub(lambda m: self.__repanc(m, id), line)
+        p = re.compile(r'(<h3 class="nvt">.+?</h3>)(?=<em class="u0f">|<i class="rnr">)', re.I)
+        line = p.sub(r'\1 ', line)
         p = re.compile(r'(?<=</em>)\s*(</span><div class="ld9">)<a class="omq">More examples</a>\s*')
         line = p.sub(r'<span onclick="xh5(this,1)"class="x3z"></span>\1', line)
         p = re.compile(r'(<div class="ld9">)<a class="omq">More examples</a>\s*(<ul[^>]*>.+?</ul>)', re.I)
@@ -662,10 +671,12 @@ class ode_downloader(downloader):
             raise AssertionError('%s: Found <a class="omq">'%key)
         p = re.compile(r'\s*<a (class="sdh">Synonyms</)a>\s*')
         line = p.sub(r'<p><span onclick="xh5(this,0)"\1span></p>', line)
-        p = re.compile(r'(?<=<div class=")eov(?=">(?:<div class="ysl">)?<h3>\s*Usage\s*</h3>)', re.I)
-        line = p.sub(r'uxu', line)
-        p = re.compile(r'(?<=<div class=")eov(?=">(?:<div class="ysl">)?<h3>\s*Origin\s*</h3>)', re.I)
-        line = p.sub(r'e8l', line)
+        p = re.compile(r'(?<=<div class=")eov(">(?:<div class="ysl">)?<h3>\s*Usage\s*</h3>)', re.I)
+        line = p.sub(r'uxu\1 ', line)
+        p = re.compile(r'(?<=<div class="uxu">)(.+?)(?=</div>)', re.I)
+        line = p.sub(self.__repnum, line)
+        p = re.compile(r'(?<=<div class=")eov(">(?:<div class="ysl">)?<h3>\s*Origin\s*</h3>)', re.I)
+        line = p.sub(r'e8l\1 ', line)
         p = re.compile(r'(?<=<div class=")u2n(">.+?<span class="aw5">)', re.I)
         line = p.sub(self.__repun, line)
         line = ''.join(['<link rel="stylesheet"href="', self.DIC_T, '.css"type="text/css"><div class="Od3">', line, '</div>'])
@@ -724,6 +735,14 @@ class ode_downloader(downloader):
 
     def __fixcrossref(self, key, line, dict, logs):
         entry = []
+        # generate variant links
+        p = re.compile(r'<div class="h1s">.+?</div>(?:<div>)?<span class="rqo">(.+?)(?=</span>)', re.I)
+        for ut in p.findall(line):
+            q = re.compile(r'(?<=<span class="l6p">)([^<>]+?)(?=\s*</span>)', re.I)
+            for sw in q.findall(ut):
+                if not sw.lstrip().lower() in dict:
+                    entry.append((sw.lstrip(), ''.join(['@@@LINK=', key]), '</>'))
+                    dict[sw.lstrip().lower()] = sw.lstrip()
         # generate Derivative links
         p = re.compile(r'<div class="s0c">\s*<h3>Derivatives</h3>\s*<dl>(.+?)</dl>', re.I)
         for dl in p.findall(line):
