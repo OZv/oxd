@@ -15,14 +15,14 @@ h2.z2h, h2.hxy, .b6i h4{display:inline-block;font-size:120%;color:blue;font-weig
 .f0t .b6i h4:after{content:",";color:black;font-size:90%}
 h2.z2h span, h2.hxy span{font-weight:normal;font-size:95%}
 h2.hxy{color:red}
-.pxt{padding-left:0.3em;font-family:"Lucida Sans Unicode","Arial Unicode MS";color:dimgray;white-space:nowrap}
+.pxt, .p2h{font-family:"Lucida Sans Unicode","Arial Unicode MS";color:dimgray;white-space:nowrap}
 .a8e{cursor:pointer;width:16px;height:16px;vertical-align:middle;position:relative;top:-2px}
 h2.z2h .lx6, h2.hxy .lx6{font-size:70%;font-weight:normal;position:relative;vertical-align:super;color:black;padding-left:2px}
 .k0z+.k0z{border-top:1px royalblue dashed;margin-top:0.4em;padding-top:0.2em}
 h3.nvt{display:inline-block;font-weight:normal}
 .xno{display:inline-block;font-weight:bold;color:sienna;font-family:"Trebuchet MS"}
 a.xno, .cw6, .mbw a{text-decoration:none}
-.xno+.pzg{padding-left:0.3em}
+.xno+.pzg, .pxt{padding-left:0.3em}
 .pzg{color:#333;font-size:90%;font-family:"Lucida Sans Unicode","Arial Unicode MS"}
 .rlx{font-style:normal;font-weight:normal;font-size:100%}
 .iko{color:#369;font-size:110%;font-weight:bold;font-family:"Lucida Grande","Lucida Sans Unicode","sans-serif"}
