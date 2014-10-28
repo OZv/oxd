@@ -679,6 +679,8 @@ class ode_downloader(downloader):
         line = p.sub(r'e8l\1 ', line)
         p = re.compile(r'(?<=<div class=")u2n(">.+?<span class="aw5">)', re.I)
         line = p.sub(self.__repun, line)
+        p = re.compile(r'(</\w+>\s*)(\/[^<>\/]+\/)(?=\s*<\w+[^<>]*>)')
+        line = p.sub(r'\1<span class="p2h">\2</span>', line)
         line = ''.join(['<link rel="stylesheet"href="', self.DIC_T, '.css"type="text/css"><div class="Od3">', line, '</div>'])
         return self.__fixcrossref(key, line, crefs, logs)
 
