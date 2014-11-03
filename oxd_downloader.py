@@ -637,18 +637,17 @@ class ode_downloader(downloader):
         line = p.sub(r'hxy\1', line)
         if line.find('<div class="top1000">')>0:
             raise AssertionError('%s: Found <div class="top1000">'%key)
-        p = re.compile(r'(?<=<h2 class="(?:hxy|z2h)">)[^<>]+(.*?</h2>)<span class="gcu">\s*Line\s*breaks:\s*<span class="q0f">(.+?)</span></span>', re.I)
-        line = p.sub(self.__reptitle, line)
-        p = re.compile(r'(?<=<h2 class="(?:hxy|z2h)">)[^<>]+(.*?</h2>)<span class="headsyllabified">\s*Syllabification:\s*<span class="syllabified">(.+?)</span></span>', re.I)
+        p = re.compile(r'(</h2>)<span class="gcu">\s*Line\s*breaks:\s*<span class="q0f">(.+?)</span></span>', re.I)
+        line = p.sub(r'@@@\2\1', line)
+        p = re.compile(r'(</h2>)<span class="headsyllabified">\s*Syllabification:\s*<span class="syllabified">(.+?)</span></span>', re.I)
+        line = p.sub(r'@@@\2\1', line)
+        p = re.compile(r'(?<=<h2 class="(?:hxy|z2h)">)[^<>]+(.*?)@@@(.+?)(?=</h2>)', re.I)
         line = p.sub(self.__reptitle, line)
         if line.find('<span class="gcu">')>0:
             raise AssertionError('%s: Found <span class="gcu">'%key)
         if line.find('<span class="headsyllabified">')>0:
             raise AssertionError('%s: Found <span class="headsyllabified">'%key)
         line = line.replace('<p class="entryFromDifferentVersion">Entry from US English dictionary</p>', '')
-        id = randomstr(4)
-        p = re.compile(r'(<h2 class="(?:hxy|z2h)">)', re.I)
-        line = p.sub(''.join([r'<a id="', id, r'"></a>\1']), line, 1)
         p = re.compile(r'<div class="headpron"><a href="[^>"]+">[^<>]+</a>(.+?)</div>', re.I)
         line = p.sub(r'<span class="pxt">\1</span>', line)
         p = re.compile(r'<span class="a8e"[^>]*?data-src-mp3="http://www.oxforddictionaries.com/media/english/uk_pron/([^>"]+?)\.mp3"[^>]*>\s*</span>', re.I)
@@ -657,11 +656,16 @@ class ode_downloader(downloader):
         line = p.sub(''.join(['<img src="ps.png"onclick="atv(this,1,\'', r'\1', '\')"class="a8e"/>']), line)
         if line.find('<span class="a8e"')>0:
             raise AssertionError('%s: Found <span class="a8e"'%key)
-        p = re.compile(r'(<h3 class="nvt">.+?)(</h3>)(.*?)(?=<(?:div|[du]l|p)|$)', re.I)
-        line = p.sub(self.__prerepanc, line)
-        p = re.compile(r'(?<=<h3 class="nvt">)(.+?)(?=</h3>)', re.I)
-        line = p.sub(lambda m: self.__repanc(m, id), line)
-        p = re.compile(r'(<h3 class="nvt">.+?</h3>)(?=<em class="u0f">|<i class="rnr">)', re.I)
+        p = re.compile('<a [^>]*?class="back-to-top"[^>]*?>.+?</a>', re.I)
+        if p.search(line):
+            id = randomstr(4)
+            p = re.compile(r'(<h2 class="(?:hxy|z2h)">)', re.I)
+            line = p.sub(''.join([r'<a id="', id, r'"></a>\1']), line, 1)
+            p = re.compile(r'(<h3 class="nvt">.+?)(</h3>)(.*?)(?=<(?:div|[du]l|p)|$)', re.I)
+            line = p.sub(self.__prerepanc, line)
+            p = re.compile(r'(?<=<h3 class="nvt">)(.+?)(?=</h3>)', re.I)
+            line = p.sub(lambda m: self.__repanc(m, id), line)
+        p = re.compile(r'(<h3 class="nvt">.+?</h3>)(?=<em class="u0f">|<i class="rnr">|\()', re.I)
         line = p.sub(r'\1 ', line)
         p = re.compile(r'(?<=</em>)\s*(</span><div class="ld9">)<a class="omq">More examples</a>\s*')
         line = p.sub(r'<span onclick="xh5(this,1)"class="x3z"></span>\1', line)
@@ -679,7 +683,7 @@ class ode_downloader(downloader):
         line = p.sub(r'e8l\1 ', line)
         p = re.compile(r'(?<=<div class=")u2n(">.+?<span class="aw5">)', re.I)
         line = p.sub(self.__repun, line)
-        p = re.compile(r'(</\w+>\s*)(\/[^<>\/]+\/)(?=\s*<\w+[^<>]*>)')
+        p = re.compile(r'(</\w+>\s*)(\/[^<>\/]+\/)(?=\s*(?:\)|<\w+[^<>]*>))')
         line = p.sub(r'\1<span class="p2h">\2</span>', line)
         line = ''.join(['<link rel="stylesheet"href="', self.DIC_T, '.css"type="text/css"><div class="Od3">', line, '</div>'])
         return self.__fixcrossref(key, line, crefs, logs)
@@ -713,6 +717,7 @@ class ode_downloader(downloader):
             text = ''.join(['<link rel="stylesheet"href="', self.DIC_T, '.css"type="text/css"><div class="Od3">', text, met, '</div>'])
             entry.append((dt, text, '</>'))
             dict[dt.lower()] = dt
+            self.__addvarLink(text, dt, dict, entry)
             return ''.join(['<p><a href="entry://', dt, '">', dt, '</a></p>'])
 
     def __splphr(self, m, key, dict, entry):
@@ -735,16 +740,18 @@ class ode_downloader(downloader):
             line = re.compile(r'(</div>$)').sub(''.join([src, r'\1']), line, 1)
         return line
 
-    def __fixcrossref(self, key, line, dict, logs):
-        entry = []
-        # generate variant links
-        p = re.compile(r'<div class="h1s">.+?</div>(?:<div>)?<span class="rqo">(.+?)(?=</span>)', re.I)
+    def __addvarLink(self, line, key, dict, entry):
+        p = re.compile(r'(?:<span class="vkq">\d+</span>|</?div>|</dt>)\s*<span class="rqo">(.+?)(?=\)\s*</span>)', re.I)
         for ut in p.findall(line):
             q = re.compile(r'(?<=<span class="l6p">)([^<>]+?)(?=\s*</span>)', re.I)
             for sw in q.findall(ut):
-                if not sw.lstrip().lower() in dict:
-                    entry.append((sw.lstrip(), ''.join(['@@@LINK=', key]), '</>'))
-                    dict[sw.lstrip().lower()] = sw.lstrip()
+                sw = sw.lstrip()
+                if not sw.lower() in dict:
+                    entry.append((sw, ''.join(['@@@LINK=', key]), '</>'))
+                    dict[sw.lower()] = sw
+
+    def __fixcrossref(self, key, line, dict, logs):
+        entry = []
         # generate Derivative links
         p = re.compile(r'<div class="s0c">\s*<h3>Derivatives</h3>\s*<dl>(.+?)</dl>', re.I)
         for dl in p.findall(line):
@@ -761,6 +768,8 @@ class ode_downloader(downloader):
         # fix cross-reference
         p = re.compile(r'(<a [^>]*href="entry://)([^>"#]+)#?[^>"]*("[^>]*>)\s*(.+?)\s*(?=</a>)', re.I)
         line = p.sub(lambda m: self.__fixref(m, dict, logs), line)
+        # generate variant links
+        self.__addvarLink(line, key, dict, entry)
         text = '\n'.join([key, self.__addscript(line), '</>'])
         if entry:
             t = ['\n'.join([en[0], self.__addscript(p.sub(lambda m: self.__fixref(m, dict, logs), en[1])), en[2]]) for en in entry]
