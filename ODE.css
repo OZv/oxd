@@ -27,8 +27,8 @@ a.xno, .cw6, .mbw a{text-decoration:none}
 .rlx{font-style:normal;font-weight:normal;font-size:100%}
 .iko{color:#369;font-size:110%;font-weight:bold;font-family:"Lucida Grande","Lucida Sans Unicode","sans-serif"}
 em.tb0{font-style:normal;font-weight:normal;color:#090;font-size:95%;font-family:Helvetica;letter-spacing:0.5px}
-.u2n, .o2x, .Od3 .se2 .u2n, dd.lg4{padding:0.2em 0 0 1em}
-.ewq{padding:0.1em 0 0 2em}
+.u2n, .o2x, .Od3 .se2 .u2n, dd.lg4{margin:0.2em 0 0 1em;position:relative}
+.ewq{margin:0.1em 0 0 2em;position:relative}
 .ulk{}.ysl{}.aw5{}
 em.xv4, .lmn{font-style:normal;color:#369;font-size:95%;font-family:Helvetica;letter-spacing:0.5px}
 em.xv4 b{font-size:105%}
@@ -42,8 +42,8 @@ em.xv4 b{font-size:105%}
 .dhk, .pzw{display:none}
 .rnr, em.u0f, .cvq, .ix9{font-style:italic;color:teal;font-size:85%;font-family:Helvetica;letter-spacing:0.5px}
 .pzg .rnr, .pzg em.u0f, .pzg .cvq{font-size:90%}
-.vkq{display:inline-block;color:blue;font-weight:bold;font-family:Helvetica;position:absolute;left:2px;width:1.5em;text-align:center}
-.ewq .vkq{left:1.3em;font-size:80%;color:#f78e1e;width:1.6em;font-family:"Arial Narrow","Arial";text-align:right}
+.vkq{display:inline-block;color:blue;font-weight:bold;font-family:Helvetica;position:absolute;left:-1.1em}
+.ewq .vkq{left:-1.8em;font-size:80%;color:#f78e1e;width:1.6em;font-family:"Arial Narrow","Arial";text-align:right}
 .cw6, .mbw a{color:royalblue;font-weight:bold}
 .qbl{color:#369;font-size:110%}
 .eov{color:#222;background-color:#EFF1F6;border-left:3px solid #69C;padding-left:0.5em;margin:0.5em 1em 0.3em 1em;text-indent:1em}
