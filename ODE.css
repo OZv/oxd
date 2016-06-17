@@ -26,7 +26,7 @@ h2.z2h .lx6, h2.hxy .lx6{font-size:70%;font-weight:normal;position:relative;vert
 h2.nvt{display:inline-block;font-weight:normal}
 .xno{display:inline-block;color:sienna;font-family:"Trebuchet MS"}
 .nvt .xno, .cw6, .mbw a{font-weight:bold}
-.xno+.pzg, .pxt{padding-left:0.3em}
+.xno+.pzg{padding-left:0.3em}
 .pzg{color:#333;font-size:90%;font-family:"Lucida Sans Unicode","Arial Unicode MS"}
 .rlx{font-style:normal;font-weight:normal;font-size:100%}
 .iko{color:#369;font-size:110%;font-weight:bold;font-family:"Lucida Grande","Open Sans","Lucida Sans Unicode","sans-serif"}
@@ -69,5 +69,5 @@ h2.z2h .l6p, h2.hxy .l6p, h4 .l6p, .rqo .l6p{color:blue;font-size:110%;font-weig
 .g4p{max-width:99%;max-height:99%}
 .Od3 img[onclick]{cursor:pointer}
 .s0c p:before{position:absolute;left:-1em}
-.s0c p{float:left;width:210px;position:relative;margin-left:1.1em}
+.s0c p{float:left;width:215px;position:relative;margin-left:1.1em}
 .mla{clear:both}
