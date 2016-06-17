@@ -314,7 +314,7 @@ class downloader:
                 for ln in fileinput.input(file):
                     ln = ln.strip()
                     if ln == '</>':
-                        buf.append(self.formatEntry(lns[0], lns[1], crefs, logs))
+                        buf.append(self.format(lns[0], lns[1], crefs, logs))
                         words.append(lns[0])
                         del lns[:]
                     elif ln:
@@ -648,7 +648,38 @@ class ode_downloader(downloader):
                     return uk if self.__illu[uk][3]==0 else None
         return None
 
-    def formatEntry(self, key, line, crefs, logs):
+    def __fixsup(self, line, diff=1):
+    	p = self.__rex(r'(?<=<h2 class="pageTitle">)(.+?)(?=</h2>)', re.I)
+        q = self.__rex(r'<span class="homograph">\d+</span>', re.I)
+        hl = p.findall(line)
+        if len(hl) > 1:
+            if diff:
+                for i in xrange(0, len(hl)):
+                    line = line.replace(hl[i], q.sub(''.join(['<span class="homograph">', str(i+1), '</span>']), hl[i]))
+            return line
+        else:
+            return q.sub(r'', line, 1)
+
+    def format(self, key, line, crefs, logs):
+        if line.count('<div class="entryPageContent">') > 1:
+            p = self.__rex(r'(?<=<h2 class="pageTitle">)\s*([^<>]+?)\s*(?=<)', re.I)
+            q = self.__rex(r'(.+?)([\-\s]\d+)')
+            hl, entry = p.findall(line), []
+            for i in xrange(1, len(hl)):
+                if hl[i].lower()!=hl[i-1].lower() and hl[i].replace(' ','-').lower()!=hl[i-1].replace(' ','-').lower():
+                    m = q.search(hl[i-1])
+                    if m and m.group(1).lower() == hl[i].lower():
+                        logs.append("I01\tSplit entry %s -> %s, %s" % (key, key, hl[i]))
+                        parts = line.split('</div><div class="entryPageContent">')
+                        line = self.__fixsup(''.join(['</div><div class="entryPageContent">'.join(parts[:i]), '</div>']), 0)
+                        entry.append(self.__formatEntry(key, line, crefs, logs))
+                        crefs[hl[i].lower()] = hl[i]
+                        line = self.__fixsup(''.join(['<div class="entryPageContent">', '</div><div class="entryPageContent">'.join(parts[i:])]))
+                        entry.append(self.__formatEntry(hl[i], line, crefs, logs))
+                        return ''.join(entry)
+        return self.__formatEntry(key, line, crefs, logs)
+
+    def __formatEntry(self, key, line, crefs, logs):
         p = self.__rex(r'<li class="dictionary_footer">\s*<a [^>]*class="responsive_center"[^>]*>\s*Get more examples\s*</a>\s*</li>', re.I)
         line = p.sub(r'', line)
         if key == 'unco':
@@ -657,6 +688,8 @@ class ode_downloader(downloader):
         elif key == 'prince':
             p = self.__rex(r'<div>\s*<a [^<>]*?href="([^<>"]+)"[^>]*>\s*View synonyms\s*</a>\s*</div>', re.I)
             line = p.sub(r'', line)
+        p = self.__rex(r'<div( id="[^<>"]+">)\s*(</)div>', re.I)
+        line = p.sub(r'<a\1\2a>', line)
         p = self.__rex(r'<div class="headpron">Pronunciation:\s*</div>', re.I)
         line = p.sub(r'', line)
         p = self.__rex(r'<header class="entryHeader">(.+?)</header>', re.I)
@@ -666,17 +699,23 @@ class ode_downloader(downloader):
         p = self.__rex(r'<div class="sound audio_play_button icon-audio"\s*data-src-mp3=\s*"http://www.oxforddictionaries.com/media/((?:american_)?english/u[ks]_pron)/([^>"]+?)\.mp3".+?</div>', re.I)
         line = p.sub(self.__rep_pron, line)
         p = self.__rex(r'<div class="headpron">Pronunciation:\s*(.+?)\s*</div>', re.I)
-        line = p.sub(lambda n: ''.join([r'<span class="pxt">', n.group(1).replace('//', '/ /'), '</span>']), line)
+        line = p.sub(r'<span class="pxt">\1</span>', line)
         p = self.__rex(r'\s*(<img src="p[rs].png"[^<>]+>)\s*(</h2>\s*<span class="pxt">/[^/<>]+)(?=/</span>)', re.I)
         line = p.sub(r'\2 \1', line)
         p = self.__rex(r'\s*(/)\s*(<img src="p[rs].png"[^<>]+>)', re.I)
         line = p.sub(r' \2\1', line)
         p = self.__rex(r'(<img src="p[rs].png"[^<>]+>)(\s*/\s*[^\s/<>][^/<>]*)(?=/)', re.I)
         line = p.sub(r'\2 \1', line)
+        p = self.__rex(r'(?<=<span class="pxt">)(.+?)(?=</span>)', re.I)
+        line = p.sub(lambda n: self.__rex('/\s*/').sub('/</span> <span class="pxt">/', n.group(1)), line)
+        p = self.__rex(r'\s+(?=<span class="homograph">\d+</span>)', re.I)
+        line = p.sub(r'', line)
         p = self.__rex(r'(</\w+>\s*)(\/[^<>\/]+\/)(?=\s*(?:\)|<\w+[^<>]*>))')
         line = p.sub(r'\1<span class="p2h">\2</span>', line)
         p = self.__rex(r'<span class="neutral">(\s*/)\s*</span>([^<>]+)<span class="neutral">(?=/</span>)', re.I)
         line = p.sub(r'<span class="p2h">\1\2', line)
+        p = self.__rex(r'(?<=>)(?=&amp;)')
+        line = p.sub(r' ', line)
         p = self.__rex(r'\s*&amp;\s*(<em class="languageGroup">)\s*', re.I)
         line = p.sub(r' \1&amp; ', line)
         p = self.__rex(r'(?<=<a )class="(?:syn|w translation)"\s*', re.I)
@@ -733,9 +772,16 @@ class ode_downloader(downloader):
         line = p.sub(self.__repexp, line)
         p = self.__rex(r'<dd class="sense">(.+?)</dd>', re.I)
         line = p.sub(self.__repexp2, line)
-        p = self.__rex(r'(?<=<section class="etymology etym ">)(.+?)(?=</section>)', re.I)
+        p = self.__rex(r'(?<=<section class="etymology etym ">)(.+?</section>)', re.I)
         q = self.__rex(r'<div class="moreInformation">\s*<a class="moreInformationExemples">[^<>]+</a>\s*(<ul[^>]*>.+?</ul>)\s*</div>', re.I)
-        line = p.sub(lambda m: ''.join([q.sub(r'\1', m.group(1))]), line)
+        m = p.search(line)
+        if m:
+            pt1, pt2 = line[:m.end()], line[m.end():]
+            n = q.search(pt1)
+            if n:
+                pt2 = pt2.replace(n.group(0), '')
+            pt1 = p.sub(lambda n: ''.join([q.sub(r'\1', n.group(1))]), pt1)
+            line = ''.join([pt1, pt2])
         line = p.sub(self.__repety, line)
         p = self.__rex(r'\s*<a (class=")moreInformationSynonyms(">Synonyms</)a>\s*')
         line = p.sub(r'<p><span onclick="o0e.e(this,1)"\1sdh\2span></p>', line)
@@ -763,16 +809,16 @@ class ode_downloader(downloader):
 
     def __fixref(self, m, dict, logs):
         ref, word = urllib.unquote(m.group(2)).replace('&amp;', '&').lower(), m.group(4).lower()
-        if ref != word and word in dict:
-            k = word
-        elif word.replace(' ', '-') in dict:
-            k = word.replace(' ', '-')
-        elif ref in dict:
+        if ref in dict:
             k = ref
         elif ref.replace(',', '').replace(' ', '-') in dict:
             k = ref.replace(',', '').replace(' ', '-')
         elif ref.replace('-', ' ') in dict:
             k = ref.replace('-', ' ')
+        elif ref != word and word in dict:
+            k = word
+        elif word.replace(' ', '-') in dict:
+            k = word.replace(' ', '-')
         else:
             n = self.__rex('^(.+?)(-\d+)$').search(ref)
             if n:
@@ -781,7 +827,7 @@ class ode_downloader(downloader):
                 elif n.group(1).replace('-', ' ') in dict:
                     k = n.group(1).replace('-', ' ')
                 a = ''.join([m.group(1), dict[k], '#', ref, '">', m.group(4), m.group(5)])
-                logs.append("I02\tMake ref %s" % a)
+                logs.append("I03\tMake ref %s" % a)
                 return a
             else:
                 logs.append("E03\t%s -> %s\t:No such key"%(word, ref))
@@ -837,7 +883,7 @@ class ode_downloader(downloader):
         return line
 
     def __addvarLink(self, line, key, dict, entry):
-        p = self.__rex(r'(?:<span class="vkq">\d+</span>|</?div>|</dt>)\s*<span class="rqo">(.+?)(?=\)\s*</span>)', re.I)
+        p = self.__rex(r'(?:<span class="vkq">\d+(?:\.\d+)?</span>|</?div>|</dt>|<a id=[^<>]+></a>)\s*<span class="rqo">(.+?)(?=\)\s*</span>)', re.I)
         for ut in p.findall(line):
             q = self.__rex(r'(?<=<span class="l6p">)([^<>]+?)(?=\s*</span>)', re.I)
             for sw in q.findall(ut):
@@ -861,11 +907,22 @@ class ode_downloader(downloader):
         # fix cross-reference
         p = self.__rex(r'(<a [^>]*href="entry://)([^>"#]+)(#?[^>"]*"[^>]*>)\s*(.+?)\s*(</a>)', re.I)
         line = p.sub(lambda m: self.__fixref(m, dict, logs), line)
+        p = self.__rex(r'(?<=href="entry://)([^>"#]+#[^>"]+)')
+        line = p.sub(lambda m: m.group(1).replace('\'', '%27'), line)
         # seperate Phrases
         p = self.__rex(r'(<section class="s0c"><h2>.+?</h2>)(.+?)(?=</dl></section>)', re.I)
         line = p.sub(lambda m: self.__splphr(m, key, dict, entry, logs), line)
         p = self.__rex(r'(</?)(?:header|section)(?=[^>]*>)', re.I)
         line = p.sub(r'\1div', line)
+        p = self.__rex(r'(?<=<h2 class="(?:hxy|z2h)">)\s*(.+?)\s*(?=</h2>|<span class="lx6">)', re.I)
+        hl = p.findall(line)
+        if len(hl) > 1:
+            for h in hl:
+                h = self.__rex(r'</?\w+[^>]*>').sub(r'', h.replace('&amp;', '&'))
+                if h.lower()!=key.lower() and h.replace(' ','-').lower()!=key.replace(' ','-').lower() and not h.lower() in dict:
+                    logs.append("I02\tGenerate link %s -> %s" % (h, key))
+                    dict[h.lower()] = h
+                    entry.append((h, ''.join(['@@@LINK=', key]), '</>'))
         # generate variant links
         self.__addvarLink(line, key, dict, entry)
         text = '\n'.join([key, self.__addscript(line), '</>\n'])
