@@ -2,19 +2,18 @@ var o0e=(function(){return{
 e:function(c,d){
 var n=d==2?c.nextSibling:c.parentNode.nextSibling;
 if(!d)n=n.childNodes[0];
-with(n.style)
-if(display!="block")display="block";
-else display="none";
+var s=n.style;
+if(s.display!="block")s.display="block";
+else s.display="none";
 },
 a:function(c,d,f){
 c.removeAttribute("onclick");
-with(c.style){
-cursor="default";
-outline="1px dotted gray";
-}
+var s=c.style;
+s.cursor="default";
+s.outline="1px dotted gray";
 var r=["english/uk_pron/","english/us_pron/","american_english/us_pron/"];
 var u="http://www.oxforddictionaries.com/media/"+r[d]+f+".mp3";
-var b=function(){with(c.style){outline="";cursor="pointer";}c.setAttribute("onclick","o0e.a(this,"+d+",'"+f+"')");};
+var b=function(){s.outline="";s.cursor="pointer";c.setAttribute("onclick","o0e.a(this,"+d+",'"+f+"')");};
 var t=setTimeout(b,2000);
 try{
 with(document.createElement("audio")){
@@ -28,13 +27,12 @@ c.style.outline="";
 }
 },
 x:function(c){
-var n=c.parentNode.nextSibling;
-with(n.style)
-if(display!="none"){
-display="none";
+var s=c.parentNode.nextSibling.style;
+if(s.display!="none"){
+s.display="none";
 c.className="yuq";
 }else{
-display="block";
+s.display="block";
 c.className="aej";
 }
 },
