@@ -69,6 +69,10 @@ def info(l, s='word'):
     return '%d %ss' % (l, s) if l>1 else '%d %s' % (l, s)
 
 
+def fix_c(c):
+    return c.replace('/', '%2F').replace('?', '%3F')
+
+
 def getwordlist(file, base_dir='', tolower=False):
     words = readdata(file, base_dir)
     if words:
@@ -584,7 +588,7 @@ class ode_downloader(downloader):
 
     def __makea(self, w, crefs):
         if w.lower() in crefs:
-            return ''.join(['<a href="entry://', w.replace('/', '%2f'), '">', w, '</a>'])
+            return ''.join(['<a href="entry://', fix_c(w), '">', w, '</a>'])
         else:
             return w
 
@@ -595,7 +599,7 @@ class ode_downloader(downloader):
         for w in wl:
             w = w.strip()
             if w.lower() in crefs:
-                al.append(''.join(['<a href="entry://', w.replace('/', '%2f'), '">', w, '</a>']))
+                al.append(''.join(['<a href="entry://', fix_c(w), '">', w, '</a>']))
             else:
                 al.append(p.sub(lambda n: ''.join([self.__makea(n.group(1), crefs), n.group(2), self.__makea(n.group(3), crefs)]), w))
         return ', '.join(al)
@@ -660,6 +664,20 @@ class ode_downloader(downloader):
         else:
             return q.sub(r'', line, 1)
 
+    def __rm_dup_etym(self, p, line):
+        q = self.__rex(r'<div class="moreInformation">\s*<a class="moreInformationExemples">[^<>]+</a>\s*(<ul[^>]*>.+?</ul>)\s*</div>', re.I)
+        m = p.search(line)
+        if m:
+            pt1, pt2 = line[:m.end()], line[m.end():]
+            n = q.search(pt1)
+            if n:
+                pt2 = pt2.replace(n.group(0), '')
+                pt1 = p.sub(lambda n: ''.join([q.sub(r'\1', n.group(1))]), pt1)
+                line = ''.join([pt1, pt2])
+            else:
+                line = ''.join([pt1, self.__rm_dup_etym(p, pt2)])
+        return line
+
     def format(self, key, line, crefs, logs):
         if line.count('<div class="entryPageContent">') > 1:
             p = self.__rex(r'(?<=<h2 class="pageTitle">)\s*([^<>]+?)\s*(?=<)', re.I)
@@ -716,8 +734,8 @@ class ode_downloader(downloader):
         line = p.sub(r'<span class="p2h">\1\2', line)
         p = self.__rex(r'(?<=>)(?=&amp;)')
         line = p.sub(r' ', line)
-        p = self.__rex(r'\s*&amp;\s*(<em class="languageGroup">)\s*', re.I)
-        line = p.sub(r' \1&amp; ', line)
+        p = self.__rex(r'\s*(&amp;|/)\s*(<em class="languageGroup">)\s*', re.I)
+        line = p.sub(r' \2\1 ', line)
         p = self.__rex(r'(?<=<a )class="(?:syn|w translation)"\s*', re.I)
         line = p.sub(r'', line)
         p = self.__rex(r'<span class="punctuation">([^<>]+)</span>', re.I)
@@ -744,7 +762,7 @@ class ode_downloader(downloader):
         p = self.__rex(r'(\s*\(sense\s*\d+)\s*\)\s*([^<>\(\)]+?)(?=\))', re.I)
         line = p.sub(r'\1 \2', line)
         p = self.__rex(r'(?<=href="entry://)([^<>"]+)(?=")', re.I)
-        line = p.sub(lambda m: m.group(1).replace('/', '%2f'), line)
+        line = p.sub(lambda m: fix_c(m.group(1)), line)
         p = self.__rex(r'(<img src=")[^<>]+?/([^/]+?)\.svg" class="illustration"[^<>]*(?=>)', re.I)
         line = p.sub(lambda m: self.__repimg(m, key, logs), line)
         p = self.__rex(r'(<section class="se1 senseGroup">)', re.I)
@@ -766,6 +784,11 @@ class ode_downloader(downloader):
         line = p.sub(self.__repety, line)
         p = self.__rex(r'<section( class="(?:etymology note[^<>"]+|note)">.+?)</section>', re.I)
         line = p.sub(r'<div\1</div>', line)
+        p = self.__rex(r'(<div class="sense-etym">.+?</div>)\s*<!-- End of DIV sense-etym-->\s*(<div class="moreInformation">.+?</div>)\s*<!-- End of DIV moreInformation-->', re.I)
+        line = p.sub(r'\2\1', line)
+        p = self.__rex(r'(?<=<div class="msDict )((?:sub)?sense)(">.+?)(?=</div>\s*<!-- End of DIV msDict \1-->)', re.I)
+        q = self.__rex(r'(<span class="exampleGroup exGrBreak">.+?</span>\s*)(<span class="definition">.+?</span>\s*)(<div class="moreInformation">.+?</div>)\s*<!-- End of DIV moreInformation-->', re.I)
+        line = p.sub(lambda m: ''.join([m.group(1), q.sub(r'\1\3\2', m.group(2))]), line)
         p = self.__rex(r'(?<=</em>)\s*(</span><div class="moreInformation">)<a class="moreInformationExemples">[^<>]+</a>\s*')
         line = p.sub(r'<span onclick="o0e.e(this,0)"class="x3z">...</span>\1', line)
         p = self.__rex(r'(<section class="(?:se1 senseGroup|subEntryBlock phrasesSubEntryBlock phr\w+)">)(.+?)(?=</section>)', re.I)
@@ -773,15 +796,7 @@ class ode_downloader(downloader):
         p = self.__rex(r'<dd class="sense">(.+?)</dd>', re.I)
         line = p.sub(self.__repexp2, line)
         p = self.__rex(r'(?<=<section class="etymology etym ">)(.+?</section>)', re.I)
-        q = self.__rex(r'<div class="moreInformation">\s*<a class="moreInformationExemples">[^<>]+</a>\s*(<ul[^>]*>.+?</ul>)\s*</div>', re.I)
-        m = p.search(line)
-        if m:
-            pt1, pt2 = line[:m.end()], line[m.end():]
-            n = q.search(pt1)
-            if n:
-                pt2 = pt2.replace(n.group(0), '')
-            pt1 = p.sub(lambda n: ''.join([q.sub(r'\1', n.group(1))]), pt1)
-            line = ''.join([pt1, pt2])
+        line = self.__rm_dup_etym(p, line)
         line = p.sub(self.__repety, line)
         p = self.__rex(r'\s*<a (class=")moreInformationSynonyms(">Synonyms</)a>\s*')
         line = p.sub(r'<p><span onclick="o0e.e(this,1)"\1sdh\2span></p>', line)
@@ -852,7 +867,7 @@ class ode_downloader(downloader):
                 dt.replace(') ', ')').lower() in dict or dt.replace(' (', '(').lower() in dict:
                 logs.append("W01\t%s @ %s:Ignore duplicate keys"%(dt, key))
             else:
-                met = ''.join(['<span class="mbw">See parent entry: <a href="entry://', key.replace('/', '%2f'), '">', key, '</a></span>'])
+                met = ''.join(['<span class="mbw">See parent entry: <a href="entry://', fix_c(key), '">', key, '</a></span>'])
                 text = ''.join(['<link rel="stylesheet"href="', self.DIC_T, '.css"type="text/css"><div class="Od3">', text, met, '</div>'])
                 p = self.__rex(r'(?<=<dt>)(.+?)(?=</dt>)', re.I)
                 q = self.__rex(r'<span class="vkq">\d+</span>', re.I)
@@ -860,7 +875,7 @@ class ode_downloader(downloader):
                 entry.append((dt, text, '</>'))
                 dict[dt.lower()] = dt
                 self.__addvarLink(text, dt, dict, entry)
-            return ''.join(['<p><a href="entry://', dt.replace('/', '%2f'), '">', dt, '</a></p>'])
+            return ''.join(['<p><a href="entry://', fix_c(dt), '">', dt, '</a></p>'])
         else:
             logs.append("W02\t%s:Check phrases"%key)
             return m.group(0)
