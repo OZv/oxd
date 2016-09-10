@@ -43,7 +43,7 @@ em.xv4 b, .uxu em b{font-size:105%}
 .xxn:before, .lmn:before{content:"\021D2\020";font-size:90%;color:#FF7E1E;position:absolute;left:-1.1em}
 .pzw{font-family:Helvetica;letter-spacing:0.5px;border-left:3px solid #DDD;padding-left:0.3em}
 .dhk, .pzw, .rpz{display:none}
-.rnr, em.u0f, .cvq, .ix9{font-style:italic;color:teal;font-size:85%;font-family:Helvetica;letter-spacing:0.5px}
+.rnr, em.u0f, .cvq, .ix9, .m7g em{font-style:italic;color:teal;font-size:85%;font-family:Helvetica;letter-spacing:0.5px}
 .pzg .rnr, .pzg em.u0f, .pzg .cvq{font-size:90%}
 .vkq{display:inline-block;color:blue;font-weight:bold;font-family:Helvetica;position:absolute;left:-1.1em}
 .ewq .vkq{left:-1.8em;font-size:80%;color:#f78e1e;width:1.6em;font-family:"Arial Narrow","Arial";text-align:right}
@@ -63,7 +63,8 @@ h2.z2h .l6p, h2.hxy .l6p, h4 .l6p, .rqo .l6p{color:blue;font-size:110%;font-weig
 .aej, .yuq{float:right;width:13px;height:6px;cursor:pointer;position:relative;top:1px;padding:.3em .1em .3em .3em}
 .yuq{transform:scaleY(-1);-webkit-transform:scaleY(-1);filter:FlipV}
 .dzg, .ynx, .eju, ul.s6x, .e8l .dhk{color:#555;border-left:3px solid #CCC;font-family:Helvetica;margin:0.5em 0 0.3em;padding-left:.5em}
-.dzg, .ynx, .e8l .dhk{display:block;margin-left:1em}
+.dzg, .ynx{display:block;margin-left:1em}
+.e8l .dhk{display:block}
 .j02, .g4p{margin:0 1ex 1ex 1ex;position:relative;z-index:999;float:right;clear:right}
 .j02{max-width:300px;max-height:400px}
 .g4p{max-width:99%;max-height:99%}
